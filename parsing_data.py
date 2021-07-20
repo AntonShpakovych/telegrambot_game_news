@@ -20,18 +20,15 @@ def show_new(url):
 
 
 def Show_titles(itter):
-    URL = 'https://stopgame.ru/news/all/p' + itter
+    URL = 'https://stopgame.ru/news/all/p' + str(itter)
     response = requests.get(URL)
     soup = BeautifulSoup(response.content, 'lxml')
     soup_titles_news = soup.find_all('div', class_='caption caption-bold')
+    list_urls_news = [i.find('a').get('href') for i in soup_titles_news]
     list_titles_news = [i.text.strip() for i in soup_titles_news]
-    return list_titles_news
+    return [list_titles_news, list_urls_news]
 
 
-def Show_urls(itter):
-    URL = 'https://stopgame.ru/news/all/p' + itter
-    response = requests.get(URL)
-    soup = BeautifulSoup(response.content, 'lxml')
-    soup_titles_news = soup.find_all('div', class_='caption caption-bold')
-    list_titles_url = [i.find('a').get('href') for i in soup_titles_news]
-    return list_titles_url
+# a = Show_titles(1)
+# b = a[1]
+# print(b)

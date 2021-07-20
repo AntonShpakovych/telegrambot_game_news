@@ -1,10 +1,11 @@
 import telebot
+from telebot.types import CallbackQuery
 from setup import *
 from parsing_data import *
+from pprint import pprint
 
 bot = telebot.TeleBot(TOKEN)
 output_titles = []
-output_urls = Show_urls('')
 
 
 @bot.message_handler(commands=['start'])  # може бути декілька параметрів
@@ -20,11 +21,13 @@ def start_message(message):
 @bot.message_handler(content_types=['text'])  # внутрішні кнопкі
 def button(message):
     a = message.text[-1]
+
     output_titles = Show_titles(a)
+
     markup = telebot.types.InlineKeyboardMarkup()
-    for i in range(len(output_titles)):
+    for i in range(len(output_titles[0])):
         markup.add(telebot.types.InlineKeyboardButton(
-            text=output_titles[i], callback_data=i+1))
+            text=output_titles[0][i], callback_data=output_titles[1][i]))
     bot.send_message(message.chat.id, f'page - {a}', reply_markup=markup)
 
 
@@ -34,9 +37,7 @@ def query_handler(call):
     bot.answer_callback_query(
         callback_query_id=call.id, text='You check some button!')
 
-    answer = show_new('https://stopgame.ru' +
-                      output_urls[int(call.data)-1])
-
+    answer = show_new('https://stopgame.ru'+call.data)
     bot.send_message(call.message.chat.id, answer)
     bot.edit_message_reply_markup(
         call.message.chat.id, call.message.message_id)
